@@ -1,2 +1,3 @@
 # Sortable
-Sortable Challenge Solution
+To run:
+``` python sort.py
