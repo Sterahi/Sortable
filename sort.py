@@ -1,35 +1,27 @@
-#!/usr/bin/python3
-import re
-import json
+import re  # Using re to do a search through the listings.
+import json  # Import JSON to handle read/write of json objects.
 prod = 0
-accuracy = input("Enter search accuracy. Please use a number >= 1. 1 will ONLY display results that match the product 100%: ")
-match_chance = 0
-
-try:
-    float(accuracy)
-except ValueError:
-   input("Sorry, that's not a valid input. Please enter a valid input: ")
-
+data = {}  # Global declaration to prevent it being recreated
 with open("data/products.txt", "r") as complete_products:
     for products in complete_products:
-        prod = prod + 1
-        product = json.loads(products)
-        search_term = product["product_name"].split("_")
-        match_chance = 0
-        print("reset")
+        prod = prod + 1  # Used as a counter to show progress
         print("Product #" + str(prod))
-        # with open("test.txt", "r") as complete_listings:
+        product = json.loads(products)  # Loading JSON to Dict
+        # Normalizing the input for searching.
+        product["product_name"] = product["product_name"].replace("_", " ")
+        # Opening the listings
         with open("data/listings.txt", "r") as complete_listings:
             for listings in complete_listings:
-                for term in search_term:
-                    listing = str(json.loads(listings))
-                    search = re.search(term, listing)
-                    if search:
-                        match_chance = match_chance + 1
+                listing = json.loads(listings)
+                with open("data/output.json", "a") as output:
+                    if product["product_name"] in str(listing):
+                        listing["product"] = product["product_name"]
+                        json.dump(listing, output)
+                        # print(data)
+                        # output.write(json.dumps + "\n")
+                        # json.dump(listing, output)
 
-                if (match_chance / len(search_term)) >= float(accuracy):
-                    print(str(match_chance) + "match")
-                    # match_chance = 0
-                    with open("data/output.txt", "a") as output:
-                        output.write(products)
-                        break
+                # data2 = {"people": [{"n": "d", "w": "as", "f": "nb"}]}
+                # with open("data/output.json", "a") as output:
+                #     json.dump(data, output)
+                #     data = None
